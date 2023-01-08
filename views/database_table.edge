@@ -1,0 +1,138 @@
+@layout('layout')
+@section('content')
+
+<div id="loader" class="lds-dual-ring hidden overlay"></div>
+<div class="container mt-3 mb-3">
+    <div class="row">
+        <div class="col-md-3 col-sm-12">
+            <select class="form-control form-control-sm" id="editAltText" >
+                <option selected>Select database</option>
+                @each(t in result)
+                    <option value="{{ t.tablename }}" >{{ t.tablename }} </option>
+                @endeach
+            </select>
+        </div>
+        <div class="col-md-9">
+            <div class="custom-control custom-checkbox custom-control-inline">
+                <input type="checkbox" class="custom-control-input check_dev" checked="true" id="customCheck1">
+                <label class="custom-control-label" for="customCheck1">Check DEV</label>
+            </div>
+            <div class="custom-control custom-checkbox custom-control-inline">
+                <input type="checkbox" class="custom-control-input check_qa" id="customCheck2">
+                <label class="custom-control-label" for="customCheck2">Check QA</label>
+              </div>
+              <div class="custom-control custom-checkbox custom-control-inline">
+                <input type="checkbox" class="custom-control-input check_pre" id="customCheck3">
+                <label class="custom-control-label" for="customCheck3">Check PRE</label>
+              </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-4 col-sm-12" id="check_dev">
+            <table class="table table-dark table-striped table-bordered table-hover table-sm">
+                <thead>
+                    <tr>
+                        <th scope="col">Dev</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Key</th>
+                    </tr>
+                </thead>
+                <tbody id="table_dev"></tbody>
+            </table>
+
+        </div>
+        <div class="col-md-4 col-sm-12" id="check_qa">
+            <table class="table table-dark table-striped table-bordered table-hover table-sm">
+                <thead>
+                    <tr>
+                        <th scope="col">QA</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Key</th>
+                    </tr>
+                </thead>
+                <tbody id="table_qa"></tbody>
+            </table>
+        </div>
+        <div class="col-md-4 col-sm-12" id="check_pre">
+            <table class="table table-dark table-striped table-bordered table-hover table-sm">
+                <thead>
+                    <tr>
+                        <th scope="col">PRE PROD</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Key</th>
+                    </tr>
+                </thead>
+                <tbody id="table_pre"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+        $(function () {
+            $('.check_dev').change(function () {
+                $('#check_dev').toggle(!this.checked);
+            }).change(); //ensure visible state matches initially
+
+            $('.check_qa').change(function () {
+                $('#check_qa').toggle(!this.checked);
+            }).change(); //ensure visible state matches initially
+
+            $('.check_pre').change(function () {
+                $('#check_pre').toggle(!this.checked);
+            }).change(); //ensure visible state matches initially
+        });
+        $(document).on('change','#editAltText', function(e,data){
+            e.preventDefault();
+            let value = $("#editAltText").val();
+            var str1 = "";
+            var str2 = "";
+            var str3 = "";
+            $("#table_dev").html("<tr><td>NO DATA</td></tr>");
+            $("#table_qa").html("<tr><td>NO DATA</td></tr>");
+            $("#table_pre").html("<tr><td>NO DATA</td></tr>");
+            // alert(value)
+            $.ajax({
+                type: "POST",
+                url: '/tables/tables',
+                data: {value:value},
+                beforeSend: function() {
+                    $('#loader').removeClass('hidden')
+                },
+                success: function (data) {
+                    console.log(data)
+                    if(data.result1){
+                        for(let t of data.result1){
+                            str1 += "<tr><td>"+t.column_name+"</td><td>"+t.udt_name+"("+t.character_maximum_length+")"+"</td><td>"+t.constraint_name+"</td></tr>";
+                            $('#table_dev').html(str1)
+                        }
+                    }
+                    if(data.result2){
+                        for(let t of data.result2){
+                            str2 += "<tr><td class='bg-danger'>"+t.column_name+"</td><td class='bg-danger'>"+t.udt_name+"("+t.character_maximum_length+")"+"</td><td>"+t.constraint_name+"</td></tr>";
+                            $('#table_qa').html(str2)
+                        }
+                    }else{
+                        str2 += "<tr><td>NO DATA</td></tr>";
+                        $('#table_qa').html(str2)
+                    }
+                    if(data.result3){
+                        for(let t of data.result3){
+                            str3 += "<tr><td class='bg-danger'>"+t.column_name+"</td><td class='bg-danger'>"+t.udt_name+"("+t.character_maximum_length+")"+"</td><td>"+t.constraint_name+"</td></tr>";
+                            $('#table_pre').html(str3)
+                        }
+                    }else{
+                        str3 += "<tr><td>NO DATA</td></tr>";
+                        $('#table_qa').html(str3)
+                    }
+                },
+                complete: function(){
+                    $('#loader').addClass('hidden')
+                },
+            });
+        });
+    });
+</script>
+@endsection

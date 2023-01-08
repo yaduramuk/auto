@@ -1,0 +1,61 @@
+query { ProfileDayReportSearch(input:{})
+    {
+    id	
+profileId	
+dayDate	
+data	
+shift	
+note	
+locked	
+priority	
+active	
+createdBy	
+createdOn	
+updatedBy	
+updatedOn	
+    }
+}
+
+query {
+    ProfileDayReportEntity(input: { id: "" }) {
+    id	
+profileId	
+dayDate	
+data	
+shift	
+note	
+locked	
+priority	
+active	
+createdBy	
+createdOn	
+updatedBy	
+updatedOn	
+    }
+}
+
+mutation {
+    ProfileDayReportSave(input: {id	
+profileId	
+dayDate	
+data	
+shift	
+note	
+locked	
+priority	
+active	
+createdBy	
+createdOn	
+updatedBy	
+updatedOn	}) {
+        id
+        message
+    }
+}
+
+mutation {
+    ProfileDayReportToggle(input: { id: "ABCD" }) {
+        id
+        message
+    }
+}

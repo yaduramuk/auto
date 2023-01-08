@@ -1,0 +1,117 @@
+@layout('layout')
+@section('content')
+<style>
+    @media (max-width: 576px) {
+        .mt-xs-1 {
+            margin-top: .25rem !important;
+        }
+    }
+</style>
+<div class="container">
+    <div class="card mt-5">
+        <form action="/graphql/generate" method="post">
+            <div class="card-header bg-secondary text-white">Graphql Demo</div>
+            <div id="duplicate">
+                <div class="card-body pt-1 pb-1">
+                    <div class="row">
+                        <div class="col-md-3 col-sm-12">
+                            <select class="form-control form-control-sm" name="path[]" id="pathId" required>
+                                <option value="">Enter Path</option>
+                                <option value="D:/nest-test-project/test" selected>Test Path</option>
+                                    @each(x in dirList)
+                                        <option value="{{path}}/{{ x }}" >{{ x }} </option>
+                                    @endeach
+                            </select>
+                        </div>
+                        <div class="col-md-3 col-sm-12">
+                            <select class="form-control form-control-sm" name="subpath[]" id="subpath">
+                                <option value="">Not required</option>
+                                @each(x in subDir)
+                                    <option value="{{path}}/{{ x }}"> {{ x }} </option>
+                                @endeach
+                            </select>
+                        </div>
+                        <div class="col-md-2 col-sm-12 mt-sm-1 mt-xs-1">
+                            <select class="form-control form-control-sm" name="tableName[]" id="tableName" required>
+                                <option value="">Enter Table</option>
+                                @each(x in data)
+                                    <option value="{{ x.tablename }}"> {{ x.tablename }} </option>
+                                @endeach
+                            </select>
+                        </div>
+                        <div class="col-md-1 col-sm-2 mt-sm-1 mt-xs-1">
+                            <select class="form-control form-control-sm" id="module" name="module[]">
+                                <option value=true>M</option>
+                                <option value=false>F</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1 col-sm-2 mt-sm-1 mt-xs-1">
+                            <select class="form-control form-control-sm" id="resolver" name="resolver[]">
+                                <option value=true>C</option>
+                                <option value=false>F</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1 col-sm-2 mt-sm-1 mt-xs-1">
+                            <select class="form-control form-control-sm" id="service" name="service[]">
+                                <option value=true>S</option>
+                                <option value=false>F</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1 col-sm-2 mt-sm-1 mt-xs-1">
+                            <select class="form-control form-control-sm" id="entity" name="entity[]">
+                                <option value=true>E</option>
+                                <option value=false>F</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1 col-sm-2 mt-sm-1 mt-xs-1">
+                            <select class="form-control form-control-sm" id="input" name="input[]">
+                                <option value=true>I</option>
+                                <option value=false>F</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1 col-sm-2 mt-sm-1 mt-xs-1">
+                            <select class="form-control form-control-sm" id="model" name="model[]">
+                                <option value=true>M</option>
+                                <option value=false>F</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1 col-sm-2 mt-sm-1 mt-xs-1">
+                            <select class="form-control form-control-sm" id="gqlInput" name="gqlInput[]">
+                                <option value=true>G</option>
+                                <option value=false>F</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="duplicateContent"></div>
+            <div class="card-footer text-right">
+                <div class="btn-group ml-2">
+                    <button type="button" class="btn btn-sm btn-secondary" id="addMore">Add More</button>
+                    <input type="submit" class="btn btn-sm btn-primary" value='Submit'>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+        $(document).on('click','#addMore',function(){
+            $('#duplicateContent').append($('#duplicate').html())
+        });
+
+        $(document).on('change','#pathId', function(){
+            // alert($('#pathId').find(":selected").text())
+            $.post('/getSubDir', {subDir : $('#pathId').find(":selected").text().trim()},function(e){
+                e.forEach( x => {
+                    var n = x.search(".ts");
+                    if(n == -1){
+                        $('#subpath').append('<option>'+x+'</option>')
+                    }
+
+                })
+            })
+        })
+    })
+</script>
+@endsection

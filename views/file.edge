@@ -1,0 +1,85 @@
+@layout('layout')
+@section('content')
+<style>
+    @media (max-width: 576px) {
+        .mt-xs-1 {
+            margin-top: .25rem !important;
+        }
+    }
+</style>
+<div class="container">
+    <div class="card mt-5">
+        <form action="http://localhost:3000/file/generate" method="post">
+            <div class="card-header bg-secondary text-white">Bootstrap Demo</div>
+            <div id="duplicate">
+                <div class="card-body pt-1 pb-1">
+                    <div class="row">
+                        <div class="col-md-3 col-sm-12">
+                                    <select class="form-control form-control-sm" name="path[]" id="sel1" required>
+                                        <option value="">Enter Path</option>
+                                        <option value="D:/nest-test-project/test" selected>Test Path</option>
+                                        @each(x in dirList)
+                                            <option value="{{path}}/{{ x }}"> {{ x }} </option>
+                                        @endeach
+                                    </select>
+                        </div>
+                        <div class="col-md-3 col-sm-12 mt-sm-1 mt-xs-1">
+                            {{--  <input type="text" name="tableName[]" class="form-control form-control-sm" placeholder="Enter folder" id="folder"  oninput="return value = value.replace(/[^a-zA-Z0-9]/g,'_');" required>  --}}
+                            <select class="form-control form-control-sm" name="tableName[]" id="tableName" required>
+                                <option value="">Enter Table</option>
+                                @each(x in data)
+                                    <option value="{{ x.tablename }}"> {{ x.tablename }} </option>
+                                @endeach
+                            </select>
+                        </div>
+                        <div class="col-md-1 col-sm-2 mt-sm-1 mt-xs-1">
+                            <select class="form-control form-control-sm" id="module" name="module[]">
+                                <option value=true>M</option>
+                                <option value=false>F</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1 col-sm-2 mt-sm-1 mt-xs-1">
+                            <select class="form-control form-control-sm" id="controller" name="controller[]">
+                                <option value=true>C</option>
+                                <option value=false>F</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1 col-sm-2 mt-sm-1 mt-xs-1">
+                            <select class="form-control form-control-sm" id="service" name="service[]">
+                                <option value=true>S</option>
+                                <option value=false>F</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1 col-sm-2 mt-sm-1 mt-xs-1">
+                            <select class="form-control form-control-sm" id="entity" name="entity[]">
+                                <option value=true>E</option>
+                                <option value=false>F</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1 col-sm-2 mt-sm-1 mt-xs-1">
+                            <select class="form-control form-control-sm" id="inputFile" name="inputFile[]">
+                                <option value=true>I</option>
+                                <option value=false>F</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="duplicateContent"></div>
+            <div class="card-footer text-right">
+                <div class="btn-group ml-2">
+                    <button type="button" class="btn btn-sm btn-secondary" id="addMore">Add More</button>
+                    <input type="submit" class="btn btn-sm btn-primary" value='Submit'>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+        $(document).on('click','#addMore',function(){
+            $('#duplicateContent').append($('#duplicate').html())
+        })
+    })
+</script>
+@endsection
